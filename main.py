@@ -1,33 +1,31 @@
-import traceback
 from flask import Flask, request, jsonify
+import traceback
 from googletrans import Translator
-from requests.exceptions import RequestException
-from asgiify import flask_to_asgi
+import json
 
 app = Flask(__name__)
 translator = Translator()
 
 @app.route('/translate', methods=['POST'])
-async def translate_text():
-    data = await request.get_json()
-    text = data.get('text')
-
-    if not text:
-        return jsonify({'error': 'Text to translate is missing'}), 400
-
+def translate_text():
     try:
+        data = request.get_json()
+        text = data.get('text')
+
+        if not isinstance(text, str):
+            return jsonify({'error': 'Invalid input. Text should be a string.'}), 400
+
+        if not text:
+            return jsonify({'error': 'Text to translate is missing'}), 400
+
         translation = translator.translate(text, src='en', dest='ta')
         translated_text = translation.text if translation else "Translation failed"
-        return jsonify({'translated_text': translated_text}), 200
-    except RequestException as e:
-        traceback.print_exc()
-        return jsonify({'error': 'Failed to connect to translation service. Please try again later.'}), 500
+        # Convert to JSON string with Unicode characters
+        return json.dumps({'translated_text': translated_text}, ensure_ascii=False), 200
+
     except Exception as e:
         traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
-
-asgi_app = flask_to_asgi(app)
+        return jsonify({'error': 'An unexpected error occurred.'}), 500
 
 if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(asgi_app, host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8000)
