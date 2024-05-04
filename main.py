@@ -1,29 +1,21 @@
-import traceback
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, HTTPException
 from googletrans import Translator
-from requests.exceptions import RequestException
 
-app = Flask(__name__)
+app = FastAPI()
 translator = Translator()
 
-@app.route('/translate', methods=['POST'])
-def translate_text():
-    data = request.get_json()
-    text = data.get('text')
-
+@app.post('/translate/')
+async def translate_text(text: str):
     if not text:
-        return jsonify({'error': 'Text to translate is missing'}), 400
-
+        raise HTTPException(status_code=400, detail='Text to translate is missing')
+    
     try:
         translation = translator.translate(text, src='en', dest='ta')
-        translated_text = translation.text if translation else "Translation failed"
-        return jsonify({'translated_text': translated_text}), 200
-    except RequestException as e:
-        traceback.print_exc()
-        return jsonify({'error': 'Failed to connect to translation service. Please try again later.'}), 500
+        translated_text = translation.text
+        return {'translated_text': translated_text}
     except Exception as e:
-        traceback.print_exc()
-        return jsonify({'error': str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import uvicorn
+    uvicorn.run(app, host='127.0.0.1', port=8000)
