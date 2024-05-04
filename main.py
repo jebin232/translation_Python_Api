@@ -22,4 +22,4 @@ def translate_text():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    asyncio.run(Server(app).run())  # Run UVicorn server
+    uvicorn.run(app, host='127.0.0.1', port=8000)
