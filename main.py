@@ -1,6 +1,8 @@
-from flask import Flask, request, jsonify, get_asgi_application
+import traceback
+from flask import Flask, request, jsonify
 from googletrans import Translator
 from requests.exceptions import RequestException
+from asgiify import flask_to_asgi
 
 app = Flask(__name__)
 translator = Translator()
@@ -18,13 +20,13 @@ async def translate_text():
         translated_text = translation.text if translation else "Translation failed"
         return jsonify({'translated_text': translated_text}), 200
     except RequestException as e:
-        # traceback.print_exc()
+        traceback.print_exc()
         return jsonify({'error': 'Failed to connect to translation service. Please try again later.'}), 500
     except Exception as e:
-        # traceback.print_exc()
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
-asgi_app = get_asgi_application(app)
+asgi_app = flask_to_asgi(app)
 
 if __name__ == '__main__':
     import uvicorn
