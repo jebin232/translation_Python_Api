@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import traceback
 from googletrans import Translator
 import json
 
@@ -24,7 +23,6 @@ def translate_text():
         return json.dumps({'translated_text': translated_text}, ensure_ascii=False), 200
 
     except Exception as e:
-        traceback.print_exc()
         return jsonify({'error': 'An unexpected error occurred.'}), 500
 
 if __name__ == '__main__':
