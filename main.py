@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from googletrans import Translator
 import asyncio
-from uvicorn import Server
+import uvicorn
 
 app = Flask(__name__)
 translator = Translator()
