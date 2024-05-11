@@ -28,7 +28,7 @@ def translate_text():
         return jsonify({'error': 'An unexpected error occurred.'}), 500
 
 @app.route('/japan', methods=['POST'])
-def translate_text():
+def translate_textj():
     try:
         data = request.get_json()
         text = data.get('text')
@@ -49,7 +49,7 @@ def translate_text():
         return jsonify({'error': 'An unexpected error occurred.'}), 500
 
 @app.route('/german', methods=['POST'])
-def translate_text():
+def translate_textg():
     try:
         data = request.get_json()
         text = data.get('text')
@@ -70,7 +70,7 @@ def translate_text():
         return jsonify({'error': 'An unexpected error occurred.'}), 500
 
 @app.route('/hindi', methods=['POST'])
-def translate_text():
+def translate_texth():
     try:
         data = request.get_json()
         text = data.get('text')
