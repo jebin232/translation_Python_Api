@@ -89,6 +89,28 @@ def translate_texth():
     except Exception as e:
         traceback.print_exc()
         return jsonify({'error': 'An unexpected error occurred.'}), 500
+@app.route('/arb', methods=['POST'])
+def translate_ar():
+    try:
+        data = request.get_json()
+        text = data.get('text')
+
+        if not isinstance(text, str):
+            return jsonify({'error': 'Invalid input. Text should be a string.'}), 400
+
+        if not text:
+            return jsonify({'error': 'Text to translate is missing'}), 400
+
+        translation = translator.translate(text, src='en', dest='ar')
+        translated_text = translation.text if translation else "Translation failed"
+        # Convert to JSON string with Unicode characters
+        return json.dumps({'translated_text': translated_text}, ensure_ascii=False), 200
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'error': 'An unexpected error occurred.'}), 500
+
+
 
 
 if __name__ == '__main__':
