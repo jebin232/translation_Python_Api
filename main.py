@@ -2,9 +2,14 @@ from flask import Flask, request, jsonify
 import traceback
 from googletrans import Translator
 import json
+from flask_cors import CORS
+
 
 app = Flask(__name__)
 translator = Translator()
+
+CORS(app, resources={r"/*": {"origins": "https://reactapp.lifechangersind.cloud/"}})
+
 
 @app.route('/tamil', methods=['POST'])
 def translate_text():
