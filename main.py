@@ -10,6 +10,33 @@ translator = Translator()
 
 CORS(app, resources={r"/*": {"origins": "https://reactapp.lifechangersind.cloud/"}})
 
+@app.route('/translate', methods=['POST'])
+def translate_textfull():
+    try:
+        # Get data from the request
+        data = request.get_json()
+        text = data.get('text')
+        source_lang = data.get('source_lang')
+        target_lang = data.get('target_lang')
+
+        # Validate input
+        if not isinstance(text, str) or not text:
+            return jsonify({'error': 'Invalid input. Text should be a non-empty string.'}), 400
+        if not isinstance(source_lang, str) or not isinstance(target_lang, str):
+            return jsonify({'error': 'Invalid language input. Source and target languages should be strings.'}), 400
+
+        # Perform translation
+        translation = translator.translate(text, src=source_lang, dest=target_lang)
+        translated_text = translation.text if translation else "Translation failed"
+
+        # Return JSON with Unicode characters preserved
+        return jsonify({'translated_text': translated_text}), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        traceback.print_exc()
+        return jsonify({'error': 'An unexpected error occurred.'}), 500
+
 @app.route('/English', methods=['POST'])
 def translate_texteng():
     try:
