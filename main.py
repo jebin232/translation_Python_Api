@@ -11,7 +11,7 @@ translator = Translator()
 CORS(app, resources={r"/*": {"origins": "https://reactapp.lifechangersind.cloud/"}})
 
 @app.route('/English', methods=['POST'])
-def translate_text():
+def translate_texteng():
     try:
         data = request.get_json()
         text = data.get('text')
